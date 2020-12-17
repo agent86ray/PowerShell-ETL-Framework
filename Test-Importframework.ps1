@@ -12,7 +12,7 @@ Get-Help Import-Module -Online
 Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework"
 
 
-Get-ImportFrameworkVersion
+Get-ImportFrameworkConfiguration
 
 
 
