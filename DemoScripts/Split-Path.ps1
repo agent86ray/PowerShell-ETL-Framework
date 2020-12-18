@@ -14,8 +14,30 @@ $filename = Split-Path -Path $importfile -Leaf
 $filename
 
 
-# split filename on "_"
+# return filename portion of path without extension (PowerShell 6)
+$filename = Split-Path -Path $importfile -LeafBase
+$filename
 
+
+
+
+# get the filename without the extension and up to
+# not NOT including the '_' character
+
+[int] $index = $filename.IndexOf("_")
+$index
+
+if ($index -eq -1) {
+    $filename
+}
+else {
+    $filename.Substring(0, $index)
+}
+
+
+$filename.Split("_")
+
+$filename -split "-" | Get-Member
 
 
 
