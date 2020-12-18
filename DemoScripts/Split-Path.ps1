@@ -2,14 +2,20 @@
 man Split-Path -online
 
 
+$importfile = "C:\IMPORT\CRM\customer_20201217.csv"
+
 # return folder name portion of path
-$folder = Split-Path -Path "C:\IMPORT\CRM\customer_20201217.csv"
+$folder = Split-Path -Path $importfile
 $folder
 
 
 # return filename portion of path
-$filename = Split-Path -Path "C:\IMPORT\CRM\customer_20201217.csv" -Leaf
+$filename = Split-Path -Path $importfile -Leaf
 $filename
+
+
+# split filename on "_"
+
 
 
 
