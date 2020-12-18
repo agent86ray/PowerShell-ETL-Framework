@@ -8,26 +8,12 @@ Get-Module
 Import-Module "sqlserver"
 
 
-Get-SqlInstance -ServerInstance "DESKTOP-CH7B7GJ\SQL2019DEV"
-
-
-# Check the status of the SQL Server Browser service
-Get-Service | Where-Object { $_.DisplayName -like "*sql*" }
-
-
-Start-Service "SQLBrowser"
-
-
-# if fails check if its start type and status
-Get-Service "SQLBrowser" | Select-Object "StartType", "Status"
-
-Get-Service "SQLBrowser" | Select-Object "StartType", "Status" | Get-Member
-
-# if start type = disabled then set it to automatic or manual
-Set-Service -Name "SQLBrowser" -StartupType Manual
-
-# start the service
-Start-Service "SQLBrowser"
+# Get info about the SQL Server instance. Returns TYPE
+# Returns TYPE: Microsoft.SqlServer.Management.Smo.Server
+$sqlinstance = Get-SqlInstance -ServerInstance "DESKTOP-CH7B7GJ\SQL2019DEV"
+$sqlinstance
+$sqlinstance | Get-Member
+$sqlinstance.ServerVersion
 
 
 # create a hash table of the parameters required
@@ -82,4 +68,28 @@ $sqlparameters
 
 # Execute T-SQL
 Invoke-Sqlcmd @sqlparameters 
+
+
+
+
+
+
+# Check the status of the SQL Server Browser service
+Get-Service | Where-Object { $_.DisplayName -like "*sql*" }
+
+
+Start-Service "SQLBrowser"
+
+
+# if fails check if its start type and status
+Get-Service "SQLBrowser" | Select-Object "StartType", "Status"
+
+Get-Service "SQLBrowser" | Select-Object "StartType", "Status" | Get-Member
+
+# if start type = disabled then set it to automatic or manual
+Set-Service -Name "SQLBrowser" -StartupType Manual
+
+# start the service
+Start-Service "SQLBrowser"
+
 
