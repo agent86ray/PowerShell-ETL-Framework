@@ -1,7 +1,7 @@
 ﻿
 # Version information
 $version = @{
-    Version = "1.0.12";
+    Version = "1.1.0";
     RootPath = "C:\IMPORT";
     LogFolder = "C:\IMPORT"
     LogFile = "ImportFramework.Log"
@@ -47,15 +47,23 @@ function Initialize-ImportApplication {
 function Import-CsvToStaging {
     Param (
         [Parameter()]
+            [string] $CSVFileName
+    )
+
+    $CSVFileName
+}
+
+
+function Import-CsvApplicationFile {
+    Param (
+        [Parameter()]
             [string] $ApplicationName
     )
 
     $ApplicationFolder = Join-Path $version["RootPath"] $ApplicationName
-    $csvfilelist = Get-ChildItem -Path $ApplicationFolder 
-    $csvfilelist 
+    $filelist = Get-ChildItem -Path $ApplicationFolder -Include "*.csv"
 
-    #| Select-Object -ExpandProperty Name
-    
+    $filelist | ForEach-Object { Import-CsvToStaging -CSVFileName $_.Name } 
 
     #$Message = "ApplicationName = $ApplicationName"
     #Log-ImportFramework $Message

@@ -2,25 +2,23 @@
 Get-Module
 
 
-# Remove after making changes to the module
-Remove-Module ImportFramework
-
-
-Get-Help Import-Module -Online
-
 # import module from development environment
 Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework"
+
+
+# Remove after making changes to the module
+Remove-Module ImportFramework
 
 
 Get-ImportFrameworkConfiguration
 
 
+Get-Command -Module ImportFramework
 
 
-# import any csv files found; will create table if it doesn't exist
-# application name is schema name
-$csvfiles = Import-CsvToStaging -ApplicationName "CRM"
-$csvfiles | Get-Member
+
+Import-CsvToStaging -CSVFileName "customer.csv"
+
 
 
 Get-ImportFrameworkVersion
