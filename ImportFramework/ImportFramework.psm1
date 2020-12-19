@@ -101,6 +101,17 @@ function Import-CsvToStaging {
 }
 
 
+function Get-CsvCustomerPath {
+    Param (
+        [Parameter()]
+            [string] $RootFolder
+    )
+
+    $CustomerPath = Join-Path $RootFolder $version.ImportFolder
+    Write-Output $CustomerPath
+}
+
+
 function Import-CsvCustomerFile {
 
     Param (
@@ -108,11 +119,12 @@ function Import-CsvCustomerFile {
             [string] $RootFolder
     )
 
-    $CustomerPath = Join-Path $RootFolder $version.ImportFolder
+    #$CustomerPath = Join-Path $RootFolder $version.ImportFolder
 
     ForEach (
-        $csvfilepath in Get-Childitem -Path $CustomerPath *.csv | 
-        Select-Object -Expand FullName) {
+        #$csvfilepath in Get-Childitem -Path $CustomerPath *.csv |
+        $csvfilepath in Get-AvailableCsvCustomerFile -RootFolder $RootFolder |
+            Select-Object -Expand FullName) {
 
         $filename = Split-Path -Path $csvfilepath -Leaf
         $tablename = $filename.Split(".")[0]
@@ -120,6 +132,19 @@ function Import-CsvCustomerFile {
         Import-CsvToStaging -CSVFilePath $csvfilepath -TableName $tablename
     }
 
+}
+
+
+function Get-AvailableCsvCustomerFile {
+
+    Param (
+        [Parameter()]
+            [string] $RootFolder
+    )
+
+    $CustomerPath = Get-CsvCustomerPath -RootFolder $RootFolder
+    $CsvFiles = Get-Childitem -Path $CustomerPath *.csv
+    Write-Output $CsvFiles
 }
 
 

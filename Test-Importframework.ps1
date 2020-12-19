@@ -24,6 +24,10 @@ $CustomerParameters = @{
 
 $CustomerParameters
 
+Get-CsvCustomerPath @CustomerParameters
+
+Get-AvailableCsvCustomerFile @CustomerParameters
+
 # import all CSV files available into staging tables
 Import-CsvCustomerFile @CustomerParameters
 
