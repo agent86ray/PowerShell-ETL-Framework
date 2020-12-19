@@ -12,6 +12,7 @@ $sqlparameters = @{
     ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
     DatabaseName = "staging";
     SchemaName="import";
+    #not working on my underpowered SQL 2019 instance
     #Force=$true;
 }
 
@@ -20,27 +21,6 @@ function Get-ImportFrameworkConfiguration {
 
     $version
     $sqlparameters
-}
-
-
-function Get-ImportApplication {
-    
-    Get-ChildItem -Path $version["RootPath"] -Attributes "Directory"
-}
-
-
-function Initialize-ImportApplication {
-    Param (
-        [Parameter()]
-            [string] $ApplicationName
-    )
-
-    $ApplicationFolder = Join-Path $version["RootPath"] $ApplicationName
-
-    If (!(Test-Path $ApplicationFolder)) {
-        New-Item -Path $version["RootPath"] -Name $ApplicationName -ItemType "Directory" | Out-Null
-        Add-ImportFrameworkLog -Message "Application $ApplicationName created"
-    }
 }
 
 
@@ -116,22 +96,6 @@ function Import-CsvCustomerFile {
         Import-CsvToStaging -CSVFilePath $csvfilepath -TableName $tablename
     }
 
-}
-
-
-function Import-CsvApplicationFile {
-    Param (
-        [Parameter()]
-            [string] $ApplicationName
-    )
-
-    $ApplicationFolder = Join-Path $version["RootPath"] $ApplicationName
-    $filelist = Get-ChildItem -Path $ApplicationFolder -Include "*.csv"
-
-    $filelist | ForEach-Object { Import-CsvToStaging -CSVFileName $_.Name } 
-
-    #$Message = "ApplicationName = $ApplicationName"
-    #Log-ImportFramework $Message
 }
 
 
