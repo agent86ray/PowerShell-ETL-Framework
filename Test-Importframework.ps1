@@ -6,9 +6,14 @@ Get-Module
 Remove-Module ImportFramework
 
 
-# import module from development environment
+# import module directly from development environment
+# for deployment put module in ImportFramework folder
+# under C:\Program Files\WindowsPowerShell\Modules
 Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework" -Verbose
 
+
+# show the configuration stored in the module
+Get-ImportFrameworkConfiguration
 
 
 
@@ -19,12 +24,15 @@ $CustomerParameters = @{
 
 $CustomerParameters
 
+# import all CSV files available into staging tables
 Import-CsvCustomerFile @CustomerParameters
 
 
-# $csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\customer.csv"
-# $csvfilepath
-# Create-TableScriptFromCsv -CSVFilePath $csvfilepath
+# show quick and dirty generate CREATE staging table script
+# from CSV file with column names in first row
+$csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\customer.csv"
+$csvfilepath
+Create-TableScriptFromCsv -CSVFilePath $csvfilepath
 
 
 
