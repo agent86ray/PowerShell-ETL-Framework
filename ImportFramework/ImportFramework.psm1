@@ -13,6 +13,8 @@ $version = @{
 $sqlparameters = @{
     ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
     DatabaseName = "staging";
+    SchemaName="import";
+    Force=$true;
 }
 
 
@@ -47,10 +49,36 @@ function Initialize-ImportApplication {
 function Import-CsvToStaging {
     Param (
         [Parameter()]
-            [string] $CSVFileName
+            [string] $CSVFilePath
+        ,
+        [Parameter()]
+            [string] $TableName
     )
 
-    $CSVFileName
+    "Import-CsvToStaging -CSVFilePath $CSVFilePath -TableName $TableName"
+
+    Import-Csv -Path $CSVFilePath |
+        Write-SqlTableData -TableName $TableName @sqlparameters 
+}
+
+
+function Import-CsvFileList {
+
+    Param (
+        [Parameter()]
+            [string] $RootFolder
+    )
+
+    ForEach (
+        $csvfilepath in Get-Childitem -Path $RootFolder -Recurse *.csv | 
+        Select-Object -Expand FullName) {
+
+        $filename = Split-Path -Path $csvfilepath -Leaf
+        $tablename = $filename.Split(".")[0]
+
+        Import-CsvToStaging -CSVFilePath $csvfilepath -TableName $tablename
+    }
+
 }
 
 
