@@ -7,13 +7,26 @@ Remove-Module ImportFramework
 
 
 # import module from development environment
-Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework"
+Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework" -Verbose
 
 
-Create-TableScriptFromCsv -CSVFilePath "C:\IMPORT\CUSTOMER-2\customer.csv"
 
 
-Import-CsvFileList -RootFolder "C:\IMPORT\CUSTOMER-2"
+
+$CustomerParameters = @{
+    RootFolder = "C:\EXTERNAL-FILES\CUSTOMER-1";
+}
+
+$CustomerParameters
+
+$csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\customer.csv"
+$csvfilepath
+
+#Create-TableScriptFromCsv -CSVFilePath $csvfilepath
+
+Import-CsvCustomerFile @CustomerParameters 
+
+
 
 
 

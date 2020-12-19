@@ -2,10 +2,8 @@
 # Version information
 $version = @{
     Version = "1.1.0";
-    RootPath = "C:\IMPORT";
-    LogFolder = "C:\IMPORT"
-    LogFile = "ImportFramework.Log"
-    LogFilePath = Join-Path "C:\IMPORT" "ImportFramework.Log"
+    ImportFolder = "IMPORT";
+    LogFile = "LOG\ImportFramework.Log";
 }
 
 
@@ -41,7 +39,7 @@ function Initialize-ImportApplication {
 
     If (!(Test-Path $ApplicationFolder)) {
         New-Item -Path $version["RootPath"] -Name $ApplicationName -ItemType "Directory" | Out-Null
-        Log-ImportFramework -Message "Application $ApplicationName created"
+        Add-ImportFrameworkLog -Message "Application $ApplicationName created"
     }
 }
 
@@ -93,22 +91,23 @@ function Import-CsvToStaging {
             [string] $TableName
     )
 
-    "Import-CsvToStaging -CSVFilePath $CSVFilePath -TableName $TableName"
-
     Import-Csv -Path $CSVFilePath |
         Write-SqlTableData -TableName $TableName @sqlparameters 
+
 }
 
 
-function Import-CsvFileList {
+function Import-CsvCustomerFile {
 
     Param (
         [Parameter()]
             [string] $RootFolder
     )
 
+    $CustomerPath = Join-Path $RootFolder $version.ImportFolder
+
     ForEach (
-        $csvfilepath in Get-Childitem -Path $RootFolder -Recurse *.csv | 
+        $csvfilepath in Get-Childitem -Path $CustomerPath *.csv | 
         Select-Object -Expand FullName) {
 
         $filename = Split-Path -Path $csvfilepath -Leaf
@@ -136,8 +135,11 @@ function Import-CsvApplicationFile {
 }
 
 
-function Log-ImportFramework {
+function Add-ImportFrameworkLog {
     Param (
+        [Parameter()]
+            [string] $LogFilePath
+        ,
         [Parameter()]
             [string] $Message
     )
@@ -145,8 +147,8 @@ function Log-ImportFramework {
     $RootPath = $version["RootPath"]
     $LogFile = $version["LogFile"]
 
-    If (!(Test-Path $version["LogFilePath"])) {
-        New-Item -Path $version["LogFolder"] -Name $version["LogFile"] -ItemType "file" | Out-Null
+    If (!(Test-Path $LogFilePath)) {
+        New-Item -Path $LogFilePath -Name $version["LogFile"] -ItemType "file" | Out-Null
     }
 
     $RunTime = Get-Date
