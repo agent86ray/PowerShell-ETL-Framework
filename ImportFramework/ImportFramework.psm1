@@ -119,10 +119,7 @@ function Import-CsvCustomerFile {
             [string] $RootFolder
     )
 
-    #$CustomerPath = Join-Path $RootFolder $version.ImportFolder
-
     ForEach (
-        #$csvfilepath in Get-Childitem -Path $CustomerPath *.csv |
         $csvfilepath in Get-AvailableCsvCustomerFile -RootFolder $RootFolder |
             Select-Object -Expand FullName) {
 
