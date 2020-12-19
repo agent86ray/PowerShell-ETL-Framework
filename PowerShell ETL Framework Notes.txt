@@ -1,0 +1,4 @@
+
+SQLSERVER module documentation
+https://docs.microsoft.com/en-us/powershell/module/sqlserver/?view=sqlserver-ps
+
