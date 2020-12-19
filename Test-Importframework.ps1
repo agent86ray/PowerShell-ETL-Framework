@@ -10,6 +10,9 @@ Remove-Module ImportFramework
 Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework"
 
 
+Create-TableScriptFromCsv -CSVFilePath "C:\IMPORT\CUSTOMER-2\customer.csv"
+
+
 Import-CsvFileList -RootFolder "C:\IMPORT\CUSTOMER-2"
 
 
