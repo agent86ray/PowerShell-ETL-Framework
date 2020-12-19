@@ -34,6 +34,20 @@ $csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\customer.csv"
 $csvfilepath
 Create-TableScriptFromCsv -CSVFilePath $csvfilepath
 
+$tablename = "customer"
+
+
+$csvfilename = Split-Path -Path $csvfilepath -Leaf
+[string] $timestamp = (Get-Date).ToFileTimeUtc()
+$filenameplustimestamp = $tablename + "_" + $timestamp
+$archivefilename = $csvfilename -replace $tablename, $filenameplustimestamp
+$archivefoldername = (Split-Path -Path $csvfilepath) -replace "IMPORT", "ARCHIVE"
+Join-Path $archivefoldername $archivefilename
+
+
+  
+$csvfilepath -replace $tablename, $archivefilename
+
 
 
 

@@ -3,6 +3,7 @@
 $version = @{
     Version = "1.1.0";
     ImportFolder = "IMPORT";
+    ArchiveFolder = "ARCHIVE";
     LogFile = "LOG\ImportFramework.Log";
 }
 
@@ -62,7 +63,29 @@ function Create-TableScriptFromCsv {
 }
 
 
+function Move-CsvToArchive {
+
+    Param (
+        [Parameter()]
+            [string] $CSVFilePath
+        ,
+        [Parameter()]
+            [string] $TableName
+    )
+
+    $csvfilename = Split-Path -Path $CSVFilePath -Leaf
+    [string] $timestamp = (Get-Date).ToFileTimeUtc()
+    $filenameplustimestamp = $TableName + "_" + $timestamp
+    $archivefilename = $csvfilename -replace $TableName, $filenameplustimestamp
+    $archivefoldername = (Split-Path -Path $csvfilepath) -replace $version.ImportFolder, $version.ArchiveFolder
+    $archivefilepath = Join-Path $archivefoldername $archivefilename
+
+    Move-Item -Path $CSVFilePath -Destination $archivefilepath
+}
+
+
 function Import-CsvToStaging {
+
     Param (
         [Parameter()]
             [string] $CSVFilePath
@@ -74,6 +97,7 @@ function Import-CsvToStaging {
     Import-Csv -Path $CSVFilePath |
         Write-SqlTableData -TableName $TableName @sqlparameters 
 
+    Move-CsvToArchive -CSVFilePath $CSVFilePath -TableName $TableName
 }
 
 
