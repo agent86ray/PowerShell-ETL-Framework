@@ -2,12 +2,20 @@
 Get-Module
 
 
+# Remove after making changes to the module
+Remove-Module ImportFramework
+
+
 # import module from development environment
 Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework"
 
 
-# Remove after making changes to the module
-Remove-Module ImportFramework
+Import-CsvFileList -RootFolder "C:\IMPORT\CUSTOMER-2"
+
+
+
+
+
 
 
 Get-ImportFrameworkConfiguration
