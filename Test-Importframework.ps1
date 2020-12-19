@@ -19,12 +19,13 @@ $CustomerParameters = @{
 
 $CustomerParameters
 
-$csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\customer.csv"
-$csvfilepath
+Import-CsvCustomerFile @CustomerParameters
 
-#Create-TableScriptFromCsv -CSVFilePath $csvfilepath
 
-Import-CsvCustomerFile @CustomerParameters 
+# $csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\customer.csv"
+# $csvfilepath
+# Create-TableScriptFromCsv -CSVFilePath $csvfilepath
+
 
 
 
