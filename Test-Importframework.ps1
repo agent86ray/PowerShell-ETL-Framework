@@ -19,10 +19,14 @@ Get-ImportFrameworkConfiguration
 
 
 $CustomerParameters = @{
-    RootFolder = "C:\EXTERNAL-FILES\CUSTOMER-1";
+    RootFolder = "C:\EXTERNAL-FILES\CUSTOMER-2";
 }
 
 $CustomerParameters
+
+
+Create-CustomerImportFolder @CustomerParameters
+
 
 Get-CsvCustomerPath @CustomerParameters
 
