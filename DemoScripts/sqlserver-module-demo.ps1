@@ -1,27 +1,60 @@
-﻿# Check if the sqlserver module is in the session
+﻿# sqlserver module was created by Microsoft. For documentation see
+# https://docs.microsoft.com/en-us/powershell/module/sqlserver/?view=sqlserver-ps
+
+
+# I used PowerShell v5.1
+$PSVersionTable
+
+
+# available for download from the PowerShell gallery
+Find-Module sqlserver
+
+
+# you can install directly from the PowerShell gallery 
+Find-Module sqlserver | Install-Module
+
+
+# Check if the sqlserver module is in the session
 Get-Module 
 
 
-# load to a SQL Server table using SqlServer module
-# https://docs.microsoft.com/en-us/powershell/module/sqlserver/?view=sqlserver-ps
-
+# load module if necessary
 Import-Module "sqlserver"
 
 
-# Get info about the SQL Server instance. Returns TYPE
-# Returns TYPE: Microsoft.SqlServer.Management.Smo.Server
+# Get info about the SQL Server instance. 
 $sqlinstance = Get-SqlInstance -ServerInstance "DESKTOP-CH7B7GJ\SQL2019DEV"
 $sqlinstance
+
+
+# Returns TYPE: Microsoft.SqlServer.Management.Smo.Server
+# Shows properties, methods, etc.
 $sqlinstance | Get-Member
+
+
+# show SQL Server version info
 $sqlinstance.ServerVersion
 
 
 # create a hash table of the parameters required
+# truncate table
+$sqlparameters = @{
+    ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
+    Query = "TRUNCATE TABLE staging.import.services;";
+}
+
+# Execute T-SQL
+Invoke-Sqlcmd @sqlparameters 
+
+
+# create a hash table for the parameters required
 $sqlparameters = @{
     ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
     DatabaseName = "staging";
     SchemaName = "import";
-    TableName = "services"
+    TableName = "services";
+    # not working on my laptop
+    # Force=$true;
 }
 
 # view the hash table
@@ -32,7 +65,12 @@ $sqlparameters
 # doesn't exist; e.g. database, schema, table
 # Get parameters from $sqlparameters hash table; specify the hash
 # table as a parameter by prefixing variable name with "@"
+Get-Service | Export-Csv -Path C:\temp\service.csv
 Import-Csv -Path C:\temp\service.csv | Write-SqlTableData @sqlparameters -Force
+
+
+# Query the services table
+Read-SqlTableData @sqlparameters | Out-GridView
 
 
 # When -Force creates a table, every column type is NVARCHAR(MAX)
@@ -46,28 +84,12 @@ Write-SqlTableData @sqlparameters -Force
 # execute create table script
 
 
-# create a hash table of the parameters required
-$sqlparameters = @{
-    ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
-    DatabaseName = "staging";
-    SchemaName = "import";
-    TableName = "services"
-}
 
-# Query the services table
-Read-SqlTableData @sqlparameters | Out-GridView
+
+#######################################################################
 
 
 
-# create a hash table of the parameters required
-$sqlparameters = @{
-    ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
-    Query = "TRUNCATE TABLE staging.import.services;";
-}
-$sqlparameters
-
-# Execute T-SQL
-Invoke-Sqlcmd @sqlparameters 
 
 
 
