@@ -61,6 +61,10 @@ $sqlparameters = @{
 $sqlparameters
 
 
+# Query the services table
+Read-SqlTableData @sqlparameters | Out-GridView
+
+
 # Insert rows from CSV into table. -Force will create anything that
 # doesn't exist; e.g. database, schema, table
 # Get parameters from $sqlparameters hash table; specify the hash
@@ -68,9 +72,6 @@ $sqlparameters
 Get-Service | Export-Csv -Path C:\temp\service.csv
 Import-Csv -Path C:\temp\service.csv | Write-SqlTableData @sqlparameters -Force
 
-
-# Query the services table
-Read-SqlTableData @sqlparameters | Out-GridView
 
 
 # When -Force creates a table, every column type is NVARCHAR(MAX)
