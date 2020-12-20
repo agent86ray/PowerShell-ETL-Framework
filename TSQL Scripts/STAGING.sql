@@ -8,3 +8,9 @@ TRUNCATE TABLE import.customer;
 SELECT *
 FROM import.customer;
 
+
+TRUNCATE TABLE [import].[services]
+
+SELECT *
+FROM [import].[services]
+
