@@ -2,6 +2,10 @@
 Get-Module
 
 
+#
+Get-Module -ListAvailable | Export-Excel -Now
+
+
 # Remove after making changes to the module
 Remove-Module ImportFramework
 
@@ -19,7 +23,7 @@ Get-ImportFrameworkConfiguration
 
 
 $CustomerParameters = @{
-    RootFolder = "C:\EXTERNAL-FILES\CUSTOMER-2";
+    RootFolder = "C:\EXTERNAL-FILES\CUSTOMER-1";
 }
 
 $CustomerParameters
@@ -30,7 +34,10 @@ Create-CustomerImportFolder @CustomerParameters
 
 Get-CsvCustomerPath @CustomerParameters
 
+
+# get the list of CSV files ready for import
 Get-AvailableCsvCustomerFile @CustomerParameters
+
 
 # import all CSV files available into staging tables
 Import-CsvCustomerFile @CustomerParameters
