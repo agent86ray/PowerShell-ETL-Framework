@@ -1,0 +1,21 @@
+Slide: Review SQL Server PowerShell Module
+
+
+Walk thru sqlserver-module-demo
+
+
+
+Walk thru sqlserver-adventureworks-demo
+- Create 2 CSV files for import
+
+
+
+Walk thru Test-ImportFramework
+
+
+
+Review C:\repos\PowerShell-ETL-Framework\SQLAgent\ImportCSVFileToStaging.ps1
+- This PowerShell script is executed from a SQL Agent CmdExec job step
+  in the SQL Agent job Import CSV Files with PowerShell
+
+

@@ -16,9 +16,15 @@ $viewparameters = @{
     SchemaName="Export";
 }
 
-
 # create customer csv file from view
 $exportcsvfilename = "C:\EXTERNAL-FILES\CUSTOMER-1\IMPORT\customer.csv"
 Read-SqlViewData -ViewName "CustomerLookup" -TopN 50 @viewparameters |
     Export-Csv -Path $exportcsvfilename -NoTypeInformation
 
+# create product csv file from view
+$exportcsvfilename = "C:\EXTERNAL-FILES\CUSTOMER-1\IMPORT\product.csv"
+Read-SqlViewData -ViewName "ProductLookup" -TopN 50 @viewparameters |
+    Export-Csv -Path $exportcsvfilename -NoTypeInformation
+
+
+Import-Csv -Path $exportcsvfilename | Export-Excel -Now

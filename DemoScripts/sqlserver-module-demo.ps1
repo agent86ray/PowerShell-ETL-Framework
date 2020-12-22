@@ -18,7 +18,11 @@ Find-Module sqlserver | Install-Module
 Get-Module 
 
 
-# load module if necessary
+# Get the list of PowerShell modules available
+Get-Module -ListAvailable
+
+
+# load module if necessary (I don't think it is)
 Import-Module "sqlserver"
 
 
@@ -26,28 +30,29 @@ Import-Module "sqlserver"
 $sqlinstance = Get-SqlInstance -ServerInstance "DESKTOP-CH7B7GJ\SQL2019DEV"
 $sqlinstance
 
-
 # Returns TYPE: Microsoft.SqlServer.Management.Smo.Server
 # Shows properties, methods, etc.
 $sqlinstance | Get-Member
-
 
 # show SQL Server version info
 $sqlinstance.ServerVersion
 
 
-# create a hash table of the parameters required
-# truncate table
+# create a hash table of the parameters required to execute a 
+# T-SQL command using the Invoke-Sqlcmd cmdlet.
+# I think it's easier than putting them on the command line.
 $sqlparameters = @{
     ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
-    Query = "TRUNCATE TABLE staging.import.services;";
+    Query = "TRUNCATE TABLE staging.import.customer;";
 }
 
-# Execute T-SQL
+# Execute T-SQL command to truncate a table
+# Get parameters from $sqlparameters hash table; specify the hash
+# table as a parameter by prefixing variable name with "@"
 Invoke-Sqlcmd @sqlparameters 
 
 
-# create a hash table for the parameters required
+# create a hash table for the parameters
 $sqlparameters = @{
     ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
     DatabaseName = "staging";
@@ -60,18 +65,14 @@ $sqlparameters = @{
 # view the hash table
 $sqlparameters
 
-
-# Query the services table
-Read-SqlTableData @sqlparameters | Out-GridView
-
-
 # Insert rows from CSV into table. -Force will create anything that
 # doesn't exist; e.g. database, schema, table
-# Get parameters from $sqlparameters hash table; specify the hash
-# table as a parameter by prefixing variable name with "@"
 Get-Service | Export-Csv -Path C:\temp\service.csv
 Import-Csv -Path C:\temp\service.csv | Write-SqlTableData @sqlparameters -Force
 
+
+# Query the services table
+Read-SqlTableData @sqlparameters | Out-GridView
 
 
 # When -Force creates a table, every column type is NVARCHAR(MAX)

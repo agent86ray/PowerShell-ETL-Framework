@@ -16,22 +16,36 @@ Remove-Module ImportFramework
 Import-Module -Name "C:\repos\PowerShell-ETL-Framework\ImportFramework" -Verbose
 
 
+######################################################################
+
+# truncate the staging tables
+$sqlparameters = @{
+    ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
+    Query = "TRUNCATE TABLE staging.import.customer;";
+}
+Invoke-Sqlcmd @sqlparameters 
+
+$sqlparameters = @{
+    ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
+    Query = "TRUNCATE TABLE staging.import.product;";
+}
+Invoke-Sqlcmd @sqlparameters 
+######################################################################
+
+
 # show the configuration stored in the module
 Get-ImportFrameworkConfiguration
 
 
-
-
+# parameter hash table
 $CustomerParameters = @{
     RootFolder = "C:\EXTERNAL-FILES\CUSTOMER-1";
 }
 
-$CustomerParameters
-
-
 Create-CustomerImportFolder @CustomerParameters
 
 
+# get the IMPORT folder path
 Get-CsvCustomerPath @CustomerParameters
 
 
@@ -43,64 +57,21 @@ Get-AvailableCsvCustomerFile @CustomerParameters
 Import-CsvCustomerFile @CustomerParameters
 
 
+$sqlparameters = @{
+    ServerInstance = "DESKTOP-CH7B7GJ\SQL2019DEV";
+    DatabaseName = "STAGING";
+    SchemaName="import";
+}
+
+# SELECT * FROM import.customer
+Read-SqlTableData -TableName "customer" @sqlparameters
+
+# SELECT * FROM import.product
+Read-SqlTableData -TableName "product" @sqlparameters
+
+
 # show quick and dirty generate CREATE staging table script
 # from CSV file with column names in first row
-$csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\customer.csv"
-$csvfilepath
+$csvfilepath = Join-Path $CustomerParameters.RootFolder "IMPORT\product.csv"
 Create-TableScriptFromCsv -CSVFilePath $csvfilepath
-
-$tablename = "customer"
-
-
-$csvfilename = Split-Path -Path $csvfilepath -Leaf
-[string] $timestamp = (Get-Date).ToFileTimeUtc()
-$filenameplustimestamp = $tablename + "_" + $timestamp
-$archivefilename = $csvfilename -replace $tablename, $filenameplustimestamp
-$archivefoldername = (Split-Path -Path $csvfilepath) -replace "IMPORT", "ARCHIVE"
-Join-Path $archivefoldername $archivefilename
-
-
-  
-$csvfilepath -replace $tablename, $archivefilename
-
-
-
-
-
-
-
-
-
-
-Get-ImportFrameworkConfiguration
-
-
-Get-Command -Module ImportFramework
-
-
-
-Import-CsvToStaging -CSVFileName "customer.csv"
-
-
-
-Get-ImportFrameworkVersion
-
-
-Get-ImportFrameworkConfiguration
-
-
-Initialize-ImportApplication -ApplicationName "CRM"
-
-
-# remove the log file to test creating it
-
-
-
-
-
-
-
-$modulepaths = @()
-$modulepaths = $env:PSModulePath -Split ";"
-$HOMEMODULEFOLDER = $modulepaths[0]
 
